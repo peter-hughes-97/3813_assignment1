@@ -1,0 +1,40 @@
+<div class="container">
+    <form>
+        <h2 style="display: inline-block" class="text-dark">Hi {{username}}</h2>
+
+        <h3>Groups</h3>
+        <div class="form-group">
+            <label for="newgroup" class="text-dark">New Group</label>
+            <input type="text" [(ngModel)]="newgroup" name="newgroup" id="newgroup" class="form-control" style="display:inline-block;" placeholder="Enter Group Name"/>
+            <input type="submit" (click)="createGroup(newgroup)" class="btn btn-primary" value = "Add">
+        </div>
+        <div class="form-group">
+            <ul style="list-style-type:none">
+                <div class="dropdown">
+                    <li *ngFor="let group of groups" class="btn btn-info">{{group}}
+                    <div class="dropdown-content">
+                        <input id="memberfield" type="text" [(ngModel)]="newmember" name="newmember" id="newmember" class="form-control" style="display:inline-block;" placeholder="Add Channel"/>
+                        <input type="submit" (click)="addmember(group)" class="btn btn-secondary" value = "Add">
+                        <ul style="list-style-type:none">
+                            <a *ngFor="let member of groupmembers" class=".text-dark">{{member}}</a>
+                        </ul>
+                    </div>
+                    </li>
+                </div>
+            </ul>
+        </div>
+
+        <div class="form-group">
+            <label for="messagecontent" class="text-dark">New Message</label>
+            <input type="text" [(ngModel)]="messagecontent" name="messagecontent" id="messagecontent" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <button (click)="chat(messagecontent)" class="btn btn-primary">Chat</button>
+        </div>
+
+    </form>
+    <h3>Chat Messages</h3>
+    <ul>
+        <li *ngFor="let message of messages">{{message}}</li>
+    </ul>
+</div>

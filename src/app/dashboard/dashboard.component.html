@@ -1,0 +1,22 @@
+<div class="container">
+        <form>
+            <h2 style="display: inline-block" class="text-dark">{{role}} Dashboard</h2>
+            <div class="form-group">
+                    <label for="newuser" class=".text-primary">Create User</label>
+                    <p class="text-secondary">New Users will be given Group Admin privileges</p>
+                    <input type="text" [(ngModel)]="newuser" name="newuser" id="newuser" class="form-control" placeholder="User Name" />
+                    <input type="text" [(ngModel)]="newemail" name="newemail" id="newemail" class="form-control" placeholder="Email" />
+            </div>
+                <div class="form-group">
+                    <button (click)="makeUser(newuser, newemail)" class="btn btn-primary">Create</button>
+                </div>
+    
+        </form>
+        <h3>Users</h3>
+        <p class="text-primary">{{username}} - Role: {{role}} (You)</p>
+        <ul style="list-style-type:none; margin-left: -40px;">
+            <li  style="margin-bottom:5px;" *ngFor="let user of users" class="text-primary">{{user}}
+            <button (click)="makeSuper(user)" class="btn btn-secondary" style="margin-right:5px;">Make Super User</button>
+            <button (click)="deleteUser(user)" class="btn btn-secondary">Delete</button><br></li>
+        </ul>
+    </div>
