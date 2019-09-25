@@ -25,6 +25,10 @@ export class DashboardComponent implements OnInit {
     var rolesplit = getRole.split(" ");
     var newrole = rolesplit[0].concat(" " + rolesplit[1]);
     this.role = newrole;
+    this.userlist();
+  }
+
+  userlist() {
     var loadusers = Object.keys(localStorage);
     for (let i = 0; i < loadusers.length; i++) {
       let key = localStorage.key(i);
@@ -51,8 +55,11 @@ export class DashboardComponent implements OnInit {
       let key = localStorage.key(i);
       if(this.newuser != key) {
         localStorage.setItem(this.newuser, "Group Admin " + this.newemail);
+        var newUserStr = this.newuser.concat(" - Role: Group Admin " + this.newemail);
+        this.users.push(newUserStr);
         alert("User " + this.newuser + " added");
-        location.reload();
+        this.newuser = '';
+        this.newemail = '';
         return;
       } else {
         alert("This User Already Exists!");
@@ -66,14 +73,14 @@ export class DashboardComponent implements OnInit {
     var newsuper = newsupersplit[0];
     localStorage.setItem(newsuper, "Super User");
     alert(newsuper + " is now a Super User");
-    location.reload();
   }
 
   deleteUser(val) {
     var delusersplit = val.split(" ");
     var deluser = delusersplit[0];
     localStorage.removeItem(deluser);
+    this.users = [];
+    this.userlist();
     alert("Removed " + deluser);
-    location.reload();
   }
 }
