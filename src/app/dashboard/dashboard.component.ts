@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { UserService } from '../user.service';
+import {UserModel} from '../UserModel';
 import { Router } from '@angular/router';
+import { SocketService } from '../services/socket.service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -10,37 +13,53 @@ import { ActivatedRoute } from '@angular/router';
 export class DashboardComponent implements OnInit {
 
   username = "";
+  currUser;
   role = "";
   newuser = "";
   newemail = "";
   user = "";
-  users: string[] = [];
 
-  constructor(private route:ActivatedRoute, private router: Router) { }
+  loadusers:any;
+  users:string[] = [];
+
+  constructor(private userdata:UserService, route:ActivatedRoute, private router: Router, private socketservice:SocketService) { }
 
   ngOnInit() {
+    this.socketservice.initSocket();
+    this.socketservice.updatelist();
+    //socket listening for an update to the list
     var getUser = Object.keys(sessionStorage);
-    var getRole = sessionStorage.getItem(getUser[0]);
     this.username = getUser[0];
-    var rolesplit = getRole.split(" ");
-    var newrole = rolesplit[0].concat(" " + rolesplit[1]);
-    this.role = newrole;
+    this.userdata.getitem(this.username).subscribe((data)=>{
+      this.role = data[0].role;
+      console.log(this.role);
+    });
     this.userlist();
   }
 
   userlist() {
-    var loadusers = Object.keys(localStorage);
-    for (let i = 0; i < loadusers.length; i++) {
-      let key = localStorage.key(i);
-      if (key == this.username) {
-        continue;
-      } else if (key[0] == "#") {
-        continue;
+    this.users = [];
+    this.userdata.getlist().subscribe((data)=>{
+      this.loadusers = data;
+    });
+    this.userpush();
+  }
+
+  userpush() {
+    this.userdata.getproductcount().subscribe((data)=>{
+      if (data.usercount == 0) {
+        return;
+      } else {
+        for (let i = 0; i < data.usercount; i++) {
+          if (this.loadusers[i].username == this.username) {
+            return; 
+          } else {
+            var userStr = this.loadusers[i].username.concat(" - Role: " + this.loadusers[i].role)
+            this.users.push(userStr);
+          }
+        }
       }
-      var value = localStorage.getItem(key);
-      var userStr = key.concat(" - Role: " + value)
-      this.users.push(userStr);
-    }
+    });
   }
 
   makeUser() {
@@ -78,9 +97,25 @@ export class DashboardComponent implements OnInit {
   deleteUser(val) {
     var delusersplit = val.split(" ");
     var deluser = delusersplit[0];
+    console.log(deluser);
+    if (confirm("Are you sure you want to delete " + val + " ?")){
+      this.userdata.deleteitem(deluser).subscribe((data)=>{
+        if(data.ok ==1){
+          //request socket server to send an update
+          console.log("into update stage");
+          this.socketservice.updatelist();
+          this.socketservice.prodcount();
+          this.userlist();
+        }
+      });
+    }
+  }
+    /*
+    var delusersplit = val.split(" ");
+    var deluser = delusersplit[0];
     localStorage.removeItem(deluser);
     this.users = [];
     this.userlist();
     alert("Removed " + deluser);
-  }
+    */
 }

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { UserService } from '../user.service';
+import { UserModel } from '../UserModel';
 import { Router } from '@angular/router';
-import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrier';
+
 
 @Component({
   selector: 'app-login',
@@ -9,25 +11,62 @@ import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrie
 })
 export class LoginComponent implements OnInit {
 
-  newusername = "";
-  newemail = "";
-  newpassword = "";
+  newusername:string = "";
+  newemail:string = "";
+  newpassword:string = "";
+  newid:number=null;
+  newobjid:string = "";
+  newuser:UserModel;
+  newUserMessage="";
+  iderrormsg:string = "ID already exists, new ID required.";
+  iderrormsg2:string = "";
+  iderrorshow:boolean = false;
+  noticeshow:boolean = false;
+
   username = "";
   password = "";
+  
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private userService: UserService) { }
 
   ngOnInit() {
-    sessionStorage.clear();
-    for (let i = 0; i < localStorage.length; i++) {
-      let key = localStorage.key(i);
-      if (key == "super") {
-        return;
-      }
-    }
-    localStorage.setItem("super", "Super Admin super@admin.com super");
+    this.newuser = new UserModel("super","super@admin.com","super","Super Admin");
+    this.userService.add(this.newuser).subscribe((data)=>{
+      //add super user
+    });
   }
 
+  addNewUser(event) {
+    event.preventDefault();
+    this.newuser = new UserModel(this.newusername,this.newemail,this.newpassword,"Standard User");
+    this.userService.add(this.newuser).subscribe((data)=>{
+      console.log(data);
+      this.noticeshow = true;
+      if(data.err == null){
+        this.newUserMessage = " new user (" + this.newusername + ") was added";
+      }else{
+        this.newUserMessage = data.err;
+        return;
+      }
+      
+      sessionStorage.setItem(this.newusername, "Standard User " + this.newemail + " " + this.newpassword);
+      this.router.navigateByUrl('/chat');
+    });
+    /*
+    this.submitted = true;
+
+    if(this.addForm.valid){
+      this.userService.addUser(this.addForm.value)
+      .subscribe( data => {
+        console.log(data);
+        //sessionStorage.setItem(this.newusername, "Standard User " + this.newemail + " " + this.newpassword);
+        this.router.navigateByUrl('/chat');
+      });
+    }
+    */
+  }
+
+  /*
   signup() {
     if (this.newusername.length == 0){
       alert("Please Enter a User Name");
@@ -78,4 +117,5 @@ export class LoginComponent implements OnInit {
       }
     }
   }
+  */
 }

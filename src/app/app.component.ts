@@ -10,6 +10,7 @@ export class AppComponent {
 
   clearlocal(){
     localStorage.clear();
+    sessionStorage.clear();
     alert("Cleared Local Storage");
     location.reload();
   }

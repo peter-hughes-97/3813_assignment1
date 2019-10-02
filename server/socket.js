@@ -1,14 +1,41 @@
 module.exports = {
 
-    connect: function(io, PORT){
+    connect: function(app, io,db){
+      var messages =[];
+        io.on('connect',(socket) => {
+            socket.on('updatelist',()=>{
+              const collection = db.collection('users');
+              collection.find({}).toArray((err,data)=>{
+                io.emit('newlist', data);
+             });
+            });
 
-        io.on('connection',(socket) => {
-            console.log('user connection on port '
-            + PORT + ' : ' + socket.id);
-
-            socket.on('message',(message)=>{
-                io.emit('message', message);
+            socket.on('message',(data)=>{
+               if(data){
+                 messages = [];
+                  messages.push(data);
+               }
+                if (messages.length > 6){
+                  messages.shift();
+                }
+                
+                io.emit('message', messages);
+             
+            });
+              
+            socket.on('prodcount',(data)=>{
+              const collection = db.collection('users');
+              collection.find({}).count((err,count)=>{
+              io.emit('prodcount', count);
+             // res.send({'count':count});
+            
+        });
+              
             })
-        })
-    }
-}
+          socket.on('disconnect',()=>{
+            io.emit("disconnect");
+           
+          });
+        });
+      }
+  }
