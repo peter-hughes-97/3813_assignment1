@@ -37,85 +37,40 @@ export class LoginComponent implements OnInit {
   }
 
   addNewUser(event) {
+    //add user to db
     event.preventDefault();
-    this.newuser = new UserModel(this.newusername,this.newemail,this.newpassword,"Standard User");
-    this.userService.add(this.newuser).subscribe((data)=>{
-      console.log(data);
-      this.noticeshow = true;
-      if(data.err == null){
-        this.newUserMessage = " new user (" + this.newusername + ") was added";
-      }else{
-        this.newUserMessage = data.err;
-        return;
-      }
-      
-      sessionStorage.setItem(this.newusername, "Standard User " + this.newemail + " " + this.newpassword);
-      this.router.navigateByUrl('/chat');
-    });
-    /*
-    this.submitted = true;
-
-    if(this.addForm.valid){
-      this.userService.addUser(this.addForm.value)
-      .subscribe( data => {
+    if (this.newusername == "" || this.newemail || this.newpassword) {
+      alert("Please fill in all 3 fields");
+      return;
+    } else {
+      this.newuser = new UserModel(this.newusername,this.newemail,this.newpassword,"Standard User");
+      this.userService.add(this.newuser).subscribe((data)=>{
         console.log(data);
-        //sessionStorage.setItem(this.newusername, "Standard User " + this.newemail + " " + this.newpassword);
+        this.noticeshow = true;
+        if(data.err == null){
+          this.newUserMessage = " new user (" + this.newusername + ") was added";
+        }else{
+          this.newUserMessage = data.err;
+          return;
+        }
+        
+        sessionStorage.setItem(this.newusername, "Standard User " + this.newemail + " " + this.newpassword);
         this.router.navigateByUrl('/chat');
       });
     }
-    */
   }
 
-  /*
-  signup() {
-    if (this.newusername.length == 0){
-      alert("Please Enter a User Name");
-      return;
-    } else if (this.newemail.length == 0){
-      alert("Please Enter an Email");
-      return;
-    } else if (this.newpassword.length == 0){
-      alert("Please Enter a Password");
-      return;
-    }
-    for (let i = 0; i < localStorage.length; i++) {
-      let key = localStorage.key(i);
-      if(this.newusername == key) {
-        alert("This user already exists!");
+  login(event){
+    //get user and check username and password match db
+    event.preventDefault();
+    this.userService.getitem(this.username).subscribe((data)=>{
+      if(data[0].username == this.username && data[0].password == this.password){
+        sessionStorage.setItem(this.newusername, "Standard User " + this.newemail + " " + this.newpassword);
+        this.router.navigateByUrl('/chat');
+      }else{
+        alert("User Credentials Do Not Match");
         return;
-        }
       }
-    sessionStorage.setItem(this.newusername, "Standard User " + this.newemail + " " + this.newpassword);
-    localStorage.setItem(this.newusername, "Standard User" + this.newemail + " " + this.newpassword);
-    alert("Welcome, " + this.newusername);
-    this.router.navigateByUrl('/chat');
+    });
   }
-
-  login() {
-    if (this.username.length == 0){
-      alert("No username entered");
-      return;
-    } else if (this.password.length == 0){
-      alert("No password entered");
-      return;
-    }
-    for (let i = 0; i < localStorage.length; i++) {
-      let key = localStorage.key(i);
-      if(this.username == key) {
-        var value = localStorage.getItem(key);
-        var usersplit = value.split(" ");
-        var passwordStr = usersplit[3];
-        if(this.password == passwordStr) {
-          sessionStorage.setItem(key, value);
-          alert("Welcome, " + this.username);
-          this.router.navigateByUrl('/chat');
-          return;
-        } else {
-          alert("Incorrect Password");
-          return;
-        }
-      }
-    }
-  }
-  */
 }

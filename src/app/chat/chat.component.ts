@@ -32,16 +32,9 @@ export class ChatComponent implements OnInit {
     var getRole = sessionStorage.getItem(getUser[0]);
     this.username = getUser[0];
     this.role = getRole;
-    for (let i = 0; i < localStorage.length; i++) {
-      let key = localStorage.key(i);
-      if (key[0] == "#") {
-        var value = localStorage.getItem(key);
-        this.groups.push(key);
-        this.groupmembers.push(value);
-      }
-      continue;
-    }
+    this.pushgroup();
   }
+
   private initIoConnection() {
     this.socketService.initSocket();
     this.ioConnection = this.socketService.onMessage()
@@ -49,6 +42,7 @@ export class ChatComponent implements OnInit {
       this.messages.push(message);
     });
   }
+
   private chat(){
     if(this.messagecontent){
       this.socketService.send(this.messagecontent);
@@ -73,16 +67,40 @@ export class ChatComponent implements OnInit {
 
 
   createGroup() {
-    var groupkey = ("# ").concat(this.newgroup)
+    if(this.newgroup == "") {
+      alert("No group name entered");
+      return
+    } else {
+    var groupkey = ("# ").concat(this.newgroup);
     localStorage.setItem(groupkey, "");
-    location.reload();
+    this.pushgroup();
+    }
   }
 
   addmember(val) {
+    if (this.newmember == "") {
+      alert("No channel name entered");
+      return;
+    } else {
       var currentgroup = localStorage.getItem(val);
       var groupStr = currentgroup.concat(" " + this.newmember);
       localStorage.setItem(val, groupStr);
       alert("Added " + this.newmember + " to " + val);
-      location.reload();
+      this.pushgroup();
+    }
+  }
+
+  pushgroup(){
+    this.groups = [];
+    this.groupmembers = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      let key = localStorage.key(i);
+      if (key[0] == "#") {
+        var value = localStorage.getItem(key);
+        this.groups.push(key);
+        this.groupmembers.push(value);
+      }
+      continue;
+    }
   }
 }

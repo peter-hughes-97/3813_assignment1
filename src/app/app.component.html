@@ -3,12 +3,12 @@
   <h1 style="display: inline-block">
     ChatNow
   </h1>
-  <a style="float:right" class="btn btn-primary" [routerLink]="'/'">Sign Out</a>
+  <a style="float:right" class="btn btn-primary" (click)="signOut()">Sign Out</a>
   <a class="btn btn-primary" [routerLink]="'chat'">Home</a>
   <a class="btn btn-primary" [routerLink]="'account'">Account</a>
   <a class="btn btn-primary" [routerLink]="'dashboard'">Dashboard</a>
 </div>
 <router-outlet></router-outlet>
 <footer>
-  <button (click)="clearlocal()" type="button" class="btn btn-warning">Clear Local Data</button>
-</footer>
+    <button (click)="clearlocal()" type="button" class="btn btn-warning">Clear Local Data</button>
+  </footer> 

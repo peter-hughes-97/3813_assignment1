@@ -11,7 +11,7 @@
         <div class="form-group">
             <ul style="list-style-type:none">
                 <div class="dropdown">
-                    <li *ngFor="let group of groups" class="btn btn-info">{{group}}
+                    <li style="margin-left:10px;" *ngFor="let group of groups" class="btn btn-info">{{group}}
                     <div class="dropdown-content">
                         <input id="memberfield" type="text" [(ngModel)]="newmember" name="newmember" id="newmember" class="form-control" style="display:inline-block;" placeholder="Add Channel"/>
                         <input type="submit" (click)="addmember(group)" class="btn btn-secondary" value = "Add">
