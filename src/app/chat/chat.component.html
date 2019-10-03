@@ -30,11 +30,14 @@
         </div>
         <div class="form-group">
             <button (click)="chat(messagecontent)" class="btn btn-primary">Chat</button>
+            <input type='file' (change)="readUrl($event)">
         </div>
 
     </form>
     <h3>Chat Messages</h3>
-    <ul>
-        <li *ngFor="let message of messages">{{message}}</li>
+    <ul style="list-style-type:none;">
+        <li *ngFor="let message of messages">{{message}}
+            <img id="imgbox" [src]="message" height="200px" width=auto>
+        </li>
     </ul>
 </div>

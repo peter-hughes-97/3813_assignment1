@@ -22,6 +22,7 @@ export class ChatComponent implements OnInit {
   newmember = "";
   messages:string[] = [];
   ioConnection:any;
+  url = '';
 
   constructor(private socketService:SocketService, private route:ActivatedRoute, private router: Router) { }
 
@@ -55,8 +56,21 @@ export class ChatComponent implements OnInit {
     } else {
       console.log("no message");
     }
-
   }
+
+  readUrl(event:any) {
+    if (event.target.files && event.target.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = (event:any) => {
+            this.url = event.target.result;
+            this.messages.push(this.url);
+        }
+
+        reader.readAsDataURL(event.target.files[0]);
+    }
+}
+
 
   createGroup() {
     var groupkey = ("# ").concat(this.newgroup)

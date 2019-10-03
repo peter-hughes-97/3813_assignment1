@@ -1,9 +1,12 @@
 <div class="container">
         <form>
-            <h2 style="display: inline-block" class="text-dark">Account Information</h2>
+            <h2 style="display: inline-block" class="text-dark">Account Information</h2><br>
+            <img [src]="image" height="100px" width=auto><br>
+            <label for="selectimage">Change Profile Picture</label><br>
+            <input id="selectimage" type='file' (change)="readUrl($event)"><br><br>
             <p class="text-dark">Username: {{username}}</p>
             <p class="text-dark">Role: {{role}}</p>
-            <p class="text-dark">Email: {{email}}</p>
+            <p class="text-dark">Email: {{email}}</p><br>
     
         </form>
     </div>

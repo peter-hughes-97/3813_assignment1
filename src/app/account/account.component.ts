@@ -15,10 +15,14 @@ export class AccountComponent implements OnInit {
   messagecontent:string="";
   messages:string[] = [];
   ioConnection:any;
+  image = "";
+  url = '';
+  imagefolder = "assets/images/";
 
   constructor(private route:ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
+    this.image = ("assets/images/default.png")
     var getUser = Object.keys(sessionStorage);
     var getRole = sessionStorage.getItem(getUser[0]);
     this.username = getUser[0];
@@ -27,4 +31,18 @@ export class AccountComponent implements OnInit {
     this.role = newrole;
     this.email = rolesplit[2];
   }
+
+  readUrl(event:any) {
+    if (event.target.files && event.target.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = (event:any) => {
+            this.url = event.target.result;
+            this.image = this.url;
+            event.target.files.path = this.imagefolder + event.target.files.name;
+        }
+
+        reader.readAsDataURL(event.target.files[0]);
+    }
+}
 }
